@@ -2,33 +2,58 @@
 
 ## Datos
 
-**Universidad Politécnica Salesiana**
+- **Universidad Politécnica Salesiana**
 - **Carrera:** Computación
 - **Materia:** Estructura de Datos
 - **Docente:** Ing. Pablo Torres, Mgtr.
 - **Autor:** Juan David Coronel Palacios
 
-
 ## Objetivo
 
-_Con tus palabras: qué comparas y con qué tamaños._
+Medir y comparar el tiempo que tardan cuatro formas de ordenar un arreglo de enteros, usando tres tamaños de muestra: 10 000, 50 000 y 100 000 elementos.
 
 ## Métodos utilizados
 
-_Describe las cuatro variantes y en qué archivos están._
+| Variante | Método | Tipo de arreglo |
+|---|---|---|
+| V1 | Burbuja | `int[]` |
+| V2 | Quick Sort | `int[]` |
+| V3 | `Arrays.sort` | `int[]` |
+| V4 | `Arrays.sort` con `Comparator<Integer>` | `Integer[]` |
+
+Burbuja y Quick Sort están programados en `Metodos.java`. Quick Sort usa partición de Lomuto con el último elemento como pivote. V3 y V4 usan la biblioteca estándar de Java.
+
+## Archivos del proyecto
+
+- `Generador.java`: crea arreglos de enteros aleatorios entre 0 y `n`, y rechaza tamaños negativos.
+- `Metodos.java`: contiene los cuatro métodos de ordenamiento.
+- `Benchmark.java`: mide con `System.nanoTime()` el tiempo de una tarea y devuelve un `Results`.
+- `Results.java`: guarda el nombre del método, el tamaño de la muestra y la duración.
+- `App.java`: ejecuta las 12 mediciones, valida los resultados e imprime la lista final.
+- `Pruebas.java`: ejecuta las pruebas de aceptación y el caso desfavorable de Quick Sort.
 
 ## Cómo ejecutar
 
-_Explica cómo corres `App` y `Pruebas` en tu equipo._
+Se necesita Java 17 o superior. Desde la carpeta donde están los archivos `.java`:
+
+```bash
+mkdir -p bin
+javac -d bin *.java
+java -cp bin Pruebas
+java -cp bin App
+```
+
+También se pueden ejecutar las clases `Pruebas` y `App` directamente desde el IDE.
 
 ## Cómo se hicieron las mediciones
 
-_Explica qué queda dentro y qué fuera del cronómetro, y cómo se validan los resultados._
+Para cada tamaño se genera un solo arreglo aleatorio. Cada método recibe una copia independiente, para que ninguno trabaje sobre datos que otro ya ordenó. La generación, las copias, la conversión a `Integer[]` y la referencia ordenada se preparan antes del cronómetro.
+
+`Benchmark` mide únicamente la llamada al método de ordenamiento. Al terminar cada medición, `App` compara el arreglo con la referencia ordenada con `Arrays.sort`. Si no coincide, lanza una excepción y el resultado no se agrega a la lista. Al final se imprimen las 12 mediciones.
 
 ## Resultados
 
-![alt text](src/assets/image.png)
-
+![alt text](src/assets/Resultado.png)
 
 | Método | Sample | Tiempo (ms) |
 |---|---:|---:|
@@ -45,18 +70,28 @@ _Explica qué queda dentro y qué fuera del cronómetro, y cómo se validan los 
 | Arrays.sort con int[] | 100 000 |  |
 | Arrays.sort con Comparator en Integer[] | 100 000 |  |
 
+Los valores corresponden a una sola ejecución por método y tamaño, así que no sirven para afirmar que un método será siempre más rápido.
+
 ## Pruebas
 
-![alt text](src/assets/Pruebas.png)
+`Pruebas` comprueba estos casos con las cuatro variantes:
 
+- Tamaño `n = 0` y tamaño negativo en el generador.
+- Arreglo con valores repetidos (`[7, 2, 7, 0, 4, 2]`).
+- Arreglo vacío, de un solo elemento y con todos los valores iguales.
+- Arreglo ya ordenado y en orden inverso.
+- Una operación que lanza excepción dentro de `Benchmark`.
+- Caso desfavorable de Quick Sort: `n = 5 000` aleatorio contra ya ordenado.
+
+
+![](src/assets/Pruebas.png)
 ## Análisis personal
 
-_Lo que notaste tú al ejecutar._
+Al ejecutar `App`, lo que más se notó fue la diferencia de Burbuja con los demás: con 50 000 elementos tardó más de 6 segundos (6543.7858 ms), mientras Quick Sort y `Arrays.sort` terminaron en alrededor de 10 ms. También se notó que la variante con `Comparator` fue la más lenta de las tres rápidas, y que los tiempos de 10 000 salieron relativamente altos, algo que atribuyo al calentamiento de la JVM (JIT) en la primera medición.
 
 ## Conclusiones
 
-_Tus conclusiones, apoyadas en tus números._
-
-## Repositorio
-
-- [Código y archivos de la práctica](tu-enlace-de-github)
+1. Burbuja escala mal: al pasar de 10 000 a 50 000 elementos (5 veces más datos) su tiempo creció unas 35 veces, coherente con su costo cuadrático `O(n²)`.
+2. Quick Sort y `Arrays.sort` con `int[]` crecieron muy poco en comparación (alrededor de 3 y 4 veces), y con 50 000 elementos Quick Sort fue cerca de 700 veces más rápido que Burbuja.
+3. Con `Integer[]` y `Comparator` el tiempo fue mayor que con `int[]` (23.5399 ms contra 10.3952 ms con 50 000), porque se trabaja con objetos y no con valores primitivos.
+4. Quick Sort y `Arrays.sort` quedaron muy parejos. Como es una sola ejecución por tamaño, no basta para afirmar que uno sea siempre más rápido.
