@@ -1,14 +1,24 @@
 import java.util.List;
 
 public class Bubble {
-    public void sortBurbujita(List<Integer> list){
-        for(int i =0; i< list.size(); i++){
-            for(int j =1; j< list.size();j++){
-                if (list.get(j-1) > list.get(j)) {
-                    int cajita = list.get(j-1);
-                    list.set(j-1,list.get(j));
-                    list.set(j, cajita);
+
+    public void sortBubble(List<Integer> list) {
+        if (list == null || list.size() <= 1) {
+            return;
+        }
+        int n = list.size();
+        for (int i = 0; i < n - 1; i++) {
+            boolean swap = false;
+            for (int j = 0; j < n - 1 - i; j++) {
+                if (list.get(j) > list.get(j + 1)) {
+                    int temp = list.get(j);
+                    list.set(j, list.get(j + 1));
+                    list.set(j + 1, temp);
+                    swap = true;
                 }
+            }
+            if (!swap) {
+                break;
             }
         }
     }
