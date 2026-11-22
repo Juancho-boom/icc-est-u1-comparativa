@@ -32,18 +32,7 @@ Burbuja y Quick Sort están programados en `Metodos.java`. Quick Sort usa partic
 - `App.java`: ejecuta las 12 mediciones, valida los resultados e imprime la lista final.
 - `Pruebas.java`: ejecuta las pruebas de aceptación y el caso desfavorable de Quick Sort.
 
-## Cómo ejecutar
 
-Se necesita Java 17 o superior. Desde la carpeta donde están los archivos `.java`:
-
-```bash
-mkdir -p bin
-javac -d bin *.java
-java -cp bin Pruebas
-java -cp bin App
-```
-
-También se pueden ejecutar las clases `Pruebas` y `App` directamente desde el IDE.
 
 ## Cómo se hicieron las mediciones
 
